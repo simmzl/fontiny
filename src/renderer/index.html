@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  <title>Hello World!</title>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #333;
+        color: white;
+      }
+    }
+
+    @media (prefers-color-scheme: light) {
+      body {
+        background: #ddd;
+        color: black;
+      }
+    }
+
+    /* .webview {
+      display: inline-flex;
+      width: 350px;
+      height: 600px;
+      background-color: red;
+    } */
+
+    .box {
+      width: 375px;
+      height: 667px;
+    }
+
+    .webview {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  We are using Node.js 2222 <span id="node-version"></span>,
+  Chromium <span id="chrome-version"></span>,
+  and Electronoooo <span id="electron-version"></span>.
+
+  <div id="last-keypress"></div>
+
+  <button id="toggle-dark-mode">Toggle Dark Mode</button>
+  <button id="reset-to-system">Reset to System Theme</button>
+  <button id="openDevtools">openDevtools</button>
+  <button id="toggleWebviewMode">toggleWebviewMode</button>
+  <div class="box">
+    <webview
+      class="webview"
+      id="webview"
+      src="http://172.29.114.170:1028/#/checkout"
+      webpreferences="darkTheme=1, contextIsolation=false, webSecurity=false, nodeIntegration=true, allowRunningInsecureContent, javascript=yes"
+      preload="./bridge.js"
+      useragent="Mozilla/5.0 (iPhone; CPU iPhone OS 12_1_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.1 Mobile/15E148 Safari/604.1">
+    </webview>
+  </div>
+
+  <script src="./renderer.js"></script>
+</body>
+
+</html>

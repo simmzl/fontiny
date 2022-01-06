@@ -1,0 +1,3 @@
+[submodule "app"]
+	path = app
+	url = ./src/renderer/app
