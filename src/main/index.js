@@ -1,92 +1,80 @@
-const path = require('path')
-const ttt = require('electron-devtools-installer')
-console.warn(ttt)
-const { VUEJS_DEVTOOLS, VUEJS3_DEVTOOLS, REACT_DEVELOPER_TOOLS } = ttt
-// import installExtension, { VUEJS_DEVTOOLS, VUEJS3_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-const {
-  app,
-  BrowserWindow,
-  ipcMain,
-  nativeTheme,
-  globalShortcut
-} = require('electron')
+const path = require("path");
+const devtools = require("electron-devtools-installer");
+const fs = require("fs");
+const extra = require("fs-extra");
+const fontSpider = require("font-spider");
 
-// const electronReload = require('electron-reload')
+const { zipFile, writeFile, downloadFile, getAssetsPath, getFontPath } = require("./utils");
 
-// require('electron-reload')(__dirname, {
-//   electron: require(path.join(__dirname, '/../../node_modules/electron'))
-// });
-require('electron-reload')(__dirname, {
-  electron: path.resolve(__dirname, '../../node_modules', '.bin', 'electron'),
-  hardResetMethod: 'exit'
-})
+const { VUEJS3_DEVTOOLS } = devtools;
+const { app, BrowserWindow, ipcMain } = require("electron");
 
+require("electron-reload")(__dirname, {
+  electron: path.resolve(__dirname, "../../node_modules", ".bin", "electron"),
+  hardResetMethod: "exit",
+});
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,
-    height: 1000,
+    height: 600,
     webPreferences: {
-      preload: path.resolve(__dirname, 'preload.js'),
+      preload: path.resolve(__dirname, "preload.js"),
       webviewTag: true,
       nodeIntegration: true,
       allowRunningInsecureContent: true,
       webSecurity: false,
-      contextIsolation: true
-    }
-  })
+      contextIsolation: true,
+    },
+  });
 
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
-  // mainWindow.loadFile(path.resolve(__dirname, '../renderer/index.html'))
+  mainWindow.loadURL("http://localhost:3000/");
 
-  mainWindow.webContents.on('before-input-event', (event, input) => {
-    if (input.control && input.key.toLowerCase() === 'i') {
-      console.log('Pressed Control+I')
-      event.preventDefault()
-    }
-  })
+  ipcMain.handle("font-tiny", async (event, chars) => {
+    // 写入html文件
+    writeFile(chars);
 
-  globalShortcut.register('CommandOrControl+I', () => {
-    console.log('Electron loves global shortcuts!')
-    // mainWindow.webContents.toggleDevTools()
-    setTimeout(() => {
-      mainWindow.webContents.debugger.sendCommand('Emulation.setEmitTouchEventsForMouse', { enabled: true }).catch(err => {
-        console.log('set fail')
-      })
-    }, 1000)
-  })
-  mainWindow.loadURL("http://localhost:3000/")
+    // 压缩字体
+    const webFonts = await fontSpider.spider(
+      [getAssetsPath("index.html")],
+      {
+        silent: false,
+      }
+    );
+    await fontSpider.compressor(webFonts, {
+      backup: false
+    });
 
-  // const contents = mainWindow.webContents
-  // console.log(contents)
+    // 压缩字体包
+    await zipFile();
 
-  ipcMain.handle('dark-mode:toggle', () => {
-    if (nativeTheme.shouldUseDarkColors) {
-      nativeTheme.themeSource = 'light'
-    } else {
-      nativeTheme.themeSource = 'dark'
-    }
-    return nativeTheme.shouldUseDarkColors
-  })
+    // 保存
+    downloadFile(mainWindow);
+  });
 
-  ipcMain.handle('dark-mode:system', () => {
-    nativeTheme.themeSource = 'system'
-  })
-
-
+  ipcMain.handle("font-tiny-upload", (event, path) => {
+    console.warn(getFontPath())
+    extra.emptyDirSync(getFontPath());
+    extra.copy(path, getFontPath("source.ttf"), function (err) {
+      console.log("copy success!");
+    });
+  });
 }
 
-app.on('ready', () => {
+app.on("ready", () => {
   setTimeout(() => {
-    createWindow()
-    ttt.default([VUEJS3_DEVTOOLS], { forceDownload: false })
-          .then((name) => console.log(`Added Extension:  ${name}`))
-          .catch((err) => console.log('Added Extension Error: ', err));
-  }, 0)
-})
+    createWindow();
+    devtools
+      .default([VUEJS3_DEVTOOLS], {
+        forceDownload: false,
+      })
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((err) => console.log("Added Extension Error: ", err));
+  }, 0);
+});
 
-
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) createWindow()
-})
+app.on("activate", () => {
+  if (BrowserWindow.getAllWindows().length === 0) createWindow();
+});
