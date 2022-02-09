@@ -46,7 +46,7 @@ function createWindow() {
   isDev
     ? mainWindow.loadURL("http://localhost:3000/")
     : mainWindow.loadFile(
-        path.resolve(__dirname, "../renderer/app/dist/index.html")
+        path.resolve(__dirname, "../renderer/fontiny-app/dist/index.html")
       );
 
   ipcMain.handle("font-tiny-compress", async (event, chars) => {

@@ -1,3 +1,3 @@
-[submodule "app"]
-	path = app
-	url = git@github.com:simmzl/fontiny-app.git
+[submodule "src/renderer/fontiny-app"]
+	path = src/renderer/fontiny-app
+	url = https://github.com/simmzl/fontiny-app.git

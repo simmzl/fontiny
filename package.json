@@ -8,8 +8,10 @@
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "dev:web": "cd ./src/renderer/app && npm run dev",
-    "dev:electron": "npx run-p start dev:web"
+    "dev:web": "cd ./src/renderer/fontiny-app && npm run dev",
+    "dev:electron": "npx run-p start dev:web",
+    "build:web": "cd ./src/renderer/fontiny-app && npm run build",
+    "build": "npm run build:web && npm run package"
   },
   "author": "simmzl",
   "license": "ISC",
@@ -31,8 +33,7 @@
   },
   "config": {
     "forge": {
-      "packagerConfig": {
-      },
+      "packagerConfig": {},
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
