@@ -1,10 +1,10 @@
 const { contextBridge, ipcRenderer } = require("electron")
 
 contextBridge.exposeInMainWorld('fontTiny', {
-  upload: (file) => {
-    ipcRenderer.invoke('font-tiny-upload', file.path)
+  upload: (path, name) => {
+    ipcRenderer.invoke('font-tiny-upload', path, name)
   },
   compress: (args) => {
-    ipcRenderer.invoke('font-tiny', args)
+    ipcRenderer.invoke('font-tiny-compress', args)
   }
 })
