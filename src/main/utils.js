@@ -7,16 +7,16 @@ const { dialog } = require('electron')
 const zipPath = getAssetsPath("/zip/fontiny.zip")
 
 function getFontPath(filename = "") {
-  return `${__dirname}/../assets/font/${filename}` 
+  return `${__dirname}/../dist/font/${filename}` 
 }
 
 function getAssetsPath(filename = "") {
-  return `${__dirname}/../assets/${filename}`
+  return `${__dirname}/../dist/${filename}`
 }
 
 // 写入保留字体
 function writeFile(chars, outputName) {
-  // const file = path.resolve(__dirname, '../assets/index.html')
+  // const file = path.resolve(__dirname, '../dist/index.html')
   const data = `<!DOCTYPE html>
     <html lang="en">
     <head>

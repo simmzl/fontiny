@@ -1,5 +1,5 @@
 node_modules
-assets/
+dist/
 out/
 
 .DS_Store
