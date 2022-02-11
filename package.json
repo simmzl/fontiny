@@ -40,6 +40,8 @@
         {
           "name": "@electron-forge/maker-dmg",
           "config": {
+            "icon": "./src/main/assets/icons/favicon.icns",
+            "background": "./src/main/assets/icons/favicon.icns",
             "additionalDMGOptions": {
               "window": {
                 "size": {
