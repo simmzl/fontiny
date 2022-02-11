@@ -1,5 +1,4 @@
 const path = require("path");
-const devtools = require("electron-devtools-installer");
 const fs = require("fs");
 const extra = require("fs-extra");
 const fontSpider = require("font-spider");
@@ -12,7 +11,6 @@ const {
   getFontPath,
 } = require("./utils");
 
-const { VUEJS3_DEVTOOLS } = devtools;
 const { app, BrowserWindow, ipcMain, Menu } = require("electron");
 
 // const isDev = process.argv.slice(1).some(val => val === '--dev');
@@ -21,11 +19,11 @@ let outputName = "";
 
 // console.warn("=====>>>>", isDev, process.argv.slice(1))
 
-isDev &&
-  require("electron-reload")(__dirname, {
-    electron: path.resolve(__dirname, "../../node_modules", ".bin", "electron"),
-    hardResetMethod: "exit",
-  });
+// isDev &&
+//   require("electron-reload")(__dirname, {
+//     electron: path.resolve(__dirname, "../../node_modules", ".bin", "electron"),
+//     hardResetMethod: "exit",
+//   });
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -44,9 +42,10 @@ function createWindow() {
 
   isDev && mainWindow.webContents.openDevTools();
 
-  isDev
-    ? mainWindow.loadURL("http://localhost:3000/")
-    : mainWindow.loadFile(
+  // isDev
+  //   ? mainWindow.loadURL("http://localhost:3000/")
+  //   : 
+    mainWindow.loadFile(
         path.resolve(__dirname, "../renderer/fontiny-app/dist/index.html")
       );
   
@@ -85,9 +84,6 @@ function createWindow() {
 app.on("ready", () => {
   setTimeout(() => {
     createWindow();
-    isDev && devtools.default([VUEJS3_DEVTOOLS], {
-      forceDownload: false,
-    });
   }, 0);
 });
 
