@@ -13,7 +13,7 @@ const {
 } = require("./utils");
 
 const { VUEJS3_DEVTOOLS } = devtools;
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, Menu } = require("electron");
 
 // const isDev = process.argv.slice(1).some(val => val === '--dev');
 const isDev = false;
@@ -30,7 +30,7 @@ isDev &&
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,
-    height: 600,
+    height: 680,
     webPreferences: {
       preload: path.resolve(__dirname, "preload.js"),
       webviewTag: true,
@@ -38,6 +38,7 @@ function createWindow() {
       allowRunningInsecureContent: true,
       webSecurity: false,
       contextIsolation: true,
+      devTools: false
     },
   });
 
@@ -48,6 +49,8 @@ function createWindow() {
     : mainWindow.loadFile(
         path.resolve(__dirname, "../renderer/fontiny-app/dist/index.html")
       );
+  
+  setMenu()
 
   ipcMain.handle("font-tiny-compress", async (event, chars) => {
     // 写入html文件
@@ -91,3 +94,27 @@ app.on("ready", () => {
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
+
+function setMenu() {
+  // 菜单模板设置
+  const template = [
+    {
+      label: app.name,
+      submenu: [
+        { label: 'Code by @yy @simmzl' },
+        { role: 'about' },
+        { type: 'separator' },
+        { role: 'services' },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideOthers' },
+        { role: 'unhide' },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    }
+  ]
+
+  // 加载菜单
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+}
