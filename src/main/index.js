@@ -11,7 +11,7 @@ const {
   getFontPath,
 } = require("./utils");
 
-const { app, BrowserWindow, ipcMain, Menu } = require("electron");
+const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require("electron");
 
 // const isDev = process.argv.slice(1).some(val => val === '--dev');
 const isDev = false;
@@ -43,32 +43,35 @@ function createWindow() {
 
   isDev && mainWindow.webContents.openDevTools();
 
-  // isDev
-  //   ? mainWindow.loadURL("http://localhost:3000/")
+  // isDev ?
+  // mainWindow.loadURL("http://localhost:3000/")
   //   : 
     mainWindow.loadFile(
         path.resolve(__dirname, "../renderer/fontiny-app/dist/index.html")
       );
   
   setMenu()
+  setGlobalShortcut(mainWindow)
 
-  ipcMain.handle("font-tiny-compress", async (event, chars) => {
-    // 写入html文件
-    writeFile(chars, outputName);
+  ipcMain.handle("font-tiny-compress", (event, chars) => {
+    (async () => {
+      // 写入html文件
+      writeFile(chars, outputName);
 
-    // 压缩字体
-    const webFonts = await fontSpider.spider([getAssetsPath("index.html")], {
-      silent: false,
-    });
-    await fontSpider.compressor(webFonts, {
-      backup: false,
-    });
+      // 压缩字体
+      const webFonts = await fontSpider.spider([getAssetsPath("index.html")], {
+        silent: false,
+      });
+      await fontSpider.compressor(webFonts, {
+        backup: false
+      });
 
-    // 压缩字体包
-    await zipFile();
+      // 压缩字体包
+      await zipFile();
 
-    // 保存
-    downloadFile(mainWindow, outputName);
+      // 保存
+      downloadFile(mainWindow, outputName);
+    })()
   });
 
   ipcMain.handle("font-tiny-upload", (event, path, name) => {
@@ -98,7 +101,7 @@ function setMenu() {
     {
       label: app.name,
       submenu: [
-        { label: 'Code by @yy @simmzl' },
+        { label: 'Code by @yy && @simmzl' },
         { role: 'about' },
         { type: 'separator' },
         { role: 'services' },
@@ -114,4 +117,28 @@ function setMenu() {
 
   // 加载菜单
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+}
+
+function setGlobalShortcut(mainWindow) {
+  mainWindow.on('focus', () => {
+    if (process.platform === 'darwin') {
+      const contents = mainWindow.webContents
+      globalShortcut.register('CommandOrControl+C', () => {
+        contents.copy()
+      })
+      globalShortcut.register('CommandOrControl+V', () => {
+        contents.paste()
+      })
+      globalShortcut.register('CommandOrControl+X', () => {
+        contents.cut()
+      })
+      globalShortcut.register('CommandOrControl+A', () => {
+        contents.selectAll()
+      })
+    }
+  })
+  mainWindow.on('blur', () => {
+    // 注销键盘事件
+    globalShortcut.unregisterAll()
+  })
 }
