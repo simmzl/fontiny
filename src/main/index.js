@@ -29,6 +29,7 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 680,
+    title: "",
     webPreferences: {
       preload: path.resolve(__dirname, "preload.js"),
       webviewTag: true,
