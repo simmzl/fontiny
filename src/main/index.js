@@ -13,11 +13,8 @@ const {
 
 const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require("electron");
 
-// const isDev = process.argv.slice(1).some(val => val === '--dev');
 const isDev = false;
 let outputName = "";
-
-// console.warn("=====>>>>", isDev, process.argv.slice(1))
 
 // isDev &&
 //   require("electron-reload")(__dirname, {
@@ -59,7 +56,7 @@ function createWindow() {
       writeFile(chars, outputName);
 
       // 压缩字体
-      const webFonts = await fontSpider.spider([getAssetsPath("index.html")], {
+      const webFonts = await fontSpider.spider([getFontPath("index.html")], {
         silent: false,
       });
       await fontSpider.compressor(webFonts, {
@@ -79,8 +76,8 @@ function createWindow() {
     const nameArr = name.split(".");
     nameArr.pop();
     outputName = nameArr.join("");
-    extra.copy(path, getFontPath(`${outputName}.ttf`), function (err) {
-      console.log("copy success!");
+    extra.copy(path, getFontPath(`${outputName}.ttf`), function () {
+      console.log("===>>> Upload file success");
     });
   });
 }
@@ -138,7 +135,6 @@ function setGlobalShortcut(mainWindow) {
     }
   })
   mainWindow.on('blur', () => {
-    // 注销键盘事件
     globalShortcut.unregisterAll()
   })
 }
