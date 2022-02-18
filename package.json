@@ -5,13 +5,13 @@
   "main": "./src/main/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron-forge start",
+    "start": "concurrently \"npm run start:renderer\" \"npm run start:main\"",
+    "start:renderer": "cd ./src/renderer/fontiny-app && npm run dev",
+    "start:main": "wait-on tcp:3001 && npx cross-env NODE_ENV=development electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "dev:web": "cd ./src/renderer/fontiny-app && npm run dev",
-    "dev:electron": "npx run-p start dev:web",
-    "build:web": "cd ./src/renderer/fontiny-app && npm run build",
-    "build": "npm run build:web && npm run package"
+    "build": "npm run build:renderer && npm run package",
+    "build:renderer": "cd ./src/renderer/fontiny-app && npm run build"
   },
   "author": "simmzl",
   "license": "ISC",
@@ -22,8 +22,11 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.61",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
+    "concurrently": "^7.0.0",
+    "cross-env": "^7.0.3",
     "electron": "^16.0.6",
-    "electron-reload": "^2.0.0-alpha.1"
+    "electron-reload": "^2.0.0-alpha.1",
+    "wait-on": "^6.0.1"
   },
   "dependencies": {
     "archiver": "^5.3.0",

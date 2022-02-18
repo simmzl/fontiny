@@ -13,14 +13,14 @@ const {
 
 const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require("electron");
 
-const isDev = false;
 let outputName = "";
 
-// isDev &&
-//   require("electron-reload")(__dirname, {
-//     electron: path.resolve(__dirname, "../../node_modules", ".bin", "electron"),
-//     hardResetMethod: "exit",
-//   });
+const isDev = process.env.NODE_ENV === "development";
+isDev &&
+  require("electron-reload")(__dirname, {
+    electron: path.resolve(__dirname, "../../node_modules", ".bin", "electron"),
+    hardResetMethod: "exit",
+  });
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -40,12 +40,9 @@ function createWindow() {
 
   isDev && mainWindow.webContents.openDevTools();
 
-  // isDev ?
-  // mainWindow.loadURL("http://localhost:3000/")
-  //   : 
-    mainWindow.loadFile(
-        path.resolve(__dirname, "../renderer/fontiny-app/dist/index.html")
-      );
+  isDev ? mainWindow.loadURL("http://localhost:3001/") : mainWindow.loadFile(
+    path.resolve(__dirname, "../renderer/fontiny-app/dist/index.html")
+  );
   
   setMenu()
   setGlobalShortcut(mainWindow)
