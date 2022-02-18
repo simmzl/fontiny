@@ -37,7 +37,8 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./src/main/assets/icons/favicon"
+        "icon": "./src/main/assets/icons/favicon",
+        "ignore": ["/src/renderer/fontiny-app/node_modules/*"]
       },
       "makers": [
         {
