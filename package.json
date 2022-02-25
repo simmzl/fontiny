@@ -44,20 +44,13 @@
         {
           "name": "@electron-forge/maker-dmg",
           "config": {
-            "icon": "./src/main/assets/icons/favicon.icns",
-            "background": "./src/main/assets/icons/bg.png",
-            "additionalDMGOptions": {
-              "window": {
-                "size": {
-                  "width": 700,
-                  "height": 700
-                },
-                "position": {
-                  "x": 200,
-                  "y": 100
-                }
-              }
-            }
+            "title": "Fontiny For Mac",
+            "background": "./src/main/assets/bg/bg.png",
+            "iconSize": 91,
+            "contents": [
+              { "x": 142, "y": 168, "type": "file", "path": "/Users/simmzl/Desktop/test/fontiny/out/Fontiny-darwin-x64/Fontiny.app" },
+              { "x": 361, "y": 168, "type": "link", "path": "/Applications" }
+            ]
           }
         },
         {
