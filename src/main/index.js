@@ -41,7 +41,7 @@ function createWindow() {
   isDev && mainWindow.webContents.openDevTools();
 
   isDev ? mainWindow.loadURL("http://localhost:3001/") : mainWindow.loadFile(
-    path.resolve(__dirname, "../renderer/fontiny-app/dist/index.html")
+    path.resolve(__dirname, "../renderer/out/index.html")
   );
   
   setMenu()
