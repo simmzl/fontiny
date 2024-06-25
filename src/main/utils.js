@@ -6,6 +6,11 @@ const { dialog } = require('electron')
 
 const zipPath = getZipPath("fontiny.zip")
 
+function getOriginFontPath(filename = "") {
+  extra.ensureDir(`${__dirname}/../dist/origin-font/`)
+  return `${__dirname}/../dist/origin-font/${filename}`
+}
+
 function getFontPath(filename = "") {
   extra.ensureDir(`${__dirname}/../dist/font/`)
   return `${__dirname}/../dist/font/${filename}` 
@@ -103,5 +108,7 @@ module.exports = {
   getFontPath,
   zipFile,
   writeFile,
-  downloadFile
+  downloadFile,
+  getOriginFontPath,
+  getZipPath
 }

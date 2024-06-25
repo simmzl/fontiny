@@ -9,6 +9,8 @@ const {
   downloadFile,
   getAssetsPath,
   getFontPath,
+  getOriginFontPath,
+  getZipPath
 } = require("./utils");
 
 const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require("electron");
@@ -49,6 +51,12 @@ function createWindow() {
 
   ipcMain.handle("font-tiny-compress", (event, chars) => {
     (async () => {
+      extra.emptyDirSync(getFontPath());
+      extra.emptyDirSync(getZipPath());
+      
+      // 复制源字体文件到字体处理目录
+      extra.copySync(getOriginFontPath(`${outputName}.ttf`), getFontPath(`${outputName}.ttf`));
+
       // 写入html文件
       writeFile(chars, outputName);
 
@@ -69,11 +77,11 @@ function createWindow() {
   });
 
   ipcMain.handle("font-tiny-upload", (event, path, name) => {
-    extra.emptyDirSync(getFontPath());
+    extra.emptyDirSync(getOriginFontPath());
     const nameArr = name.split(".");
     nameArr.pop();
     outputName = nameArr.join("");
-    extra.copy(path, getFontPath(`${outputName}.ttf`), function () {
+    extra.copy(path, getOriginFontPath(`${outputName}.ttf`), function () {
       console.log("===>>> Upload file success");
     });
   });
