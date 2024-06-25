@@ -31,6 +31,7 @@
   "dependencies": {
     "archiver": "^5.3.0",
     "electron-squirrel-startup": "^1.0.0",
+    "express": "^4.19.2",
     "font-spider": "^1.3.5",
     "fs-extra": "^10.0.0"
   },
@@ -38,7 +39,9 @@
     "forge": {
       "packagerConfig": {
         "icon": "./src/main/assets/icons/favicon",
-        "ignore": ["/src/renderer/fontiny-app/*"]
+        "ignore": [
+          "/src/renderer/fontiny-app/*"
+        ]
       },
       "makers": [
         {
@@ -48,8 +51,18 @@
             "background": "./src/main/assets/bg/bg.png",
             "iconSize": 91,
             "contents": [
-              { "x": 142, "y": 168, "type": "file", "path": "/Users/simmzl/Desktop/test/fontiny/out/Fontiny-darwin-x64/Fontiny.app" },
-              { "x": 361, "y": 168, "type": "link", "path": "/Applications" }
+              {
+                "x": 142,
+                "y": 168,
+                "type": "file",
+                "path": "/Users/simmzl/Desktop/test/fontiny/out/Fontiny-darwin-x64/Fontiny.app"
+              },
+              {
+                "x": 361,
+                "y": 168,
+                "type": "link",
+                "path": "/Applications"
+              }
             ]
           }
         },

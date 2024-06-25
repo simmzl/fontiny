@@ -10,7 +10,8 @@ const {
   getAssetsPath,
   getFontPath,
   getOriginFontPath,
-  getZipPath
+  getZipPath,
+  runServer
 } = require("./utils");
 
 const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require("electron");
@@ -24,7 +25,7 @@ isDev &&
     hardResetMethod: "exit",
   });
 
-function createWindow() {
+async function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 680,
@@ -36,15 +37,21 @@ function createWindow() {
       allowRunningInsecureContent: true,
       webSecurity: false,
       contextIsolation: true,
-      devTools: false
+      devTools: isDev
     },
   });
 
+  let renderUrl = "";
+
+  try {
+    const server = await runServer(path.join(__dirname, '../renderer/out/'))
+    renderUrl = `http://localhost:${server.address().port}`
+
+  } catch (error) {}
+
   isDev && mainWindow.webContents.openDevTools();
 
-  isDev ? mainWindow.loadURL("http://localhost:3001/") : mainWindow.loadFile(
-    path.resolve(__dirname, "../renderer/out/index.html")
-  );
+  isDev ? mainWindow.loadURL("http://localhost:3001/") : renderUrl ? mainWindow.loadURL(renderUrl) : mainWindow.loadFile(path.resolve(__dirname, "../renderer/out/index.html"));
   
   setMenu()
   setGlobalShortcut(mainWindow)

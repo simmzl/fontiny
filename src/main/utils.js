@@ -3,6 +3,7 @@ const archiver = require('archiver')
 const extra = require('fs-extra')
 const fontSpider = require('font-spider')
 const { dialog } = require('electron')
+const express = require('express');
 
 const zipPath = getZipPath("fontiny.zip")
 
@@ -103,6 +104,18 @@ function zipFile() {
   })
 }
 
+function runServer(filePath) {
+  return new Promise((resolve, reject) => {
+    const app = express();
+    // 设置静态文件目录
+    app.use(express.static(filePath));
+    const server = app.listen(0, () => {
+      console.log(`Local server is running on http://localhost:${server.address().port}`);
+      resolve(server);
+    });
+  })
+}
+
 module.exports = {
   getAssetsPath,
   getFontPath,
@@ -110,5 +123,6 @@ module.exports = {
   writeFile,
   downloadFile,
   getOriginFontPath,
-  getZipPath
+  getZipPath,
+  runServer
 }
