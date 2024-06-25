@@ -27,15 +27,17 @@ isDev &&
 
 async function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: 470,
+    minWidth: 470,
     height: 680,
     title: "",
     titleBarStyle: 'hiddenInset',
     frame: false,
+    minHeight: 657,
     // transparent: true,
     // backgroundColor: "#ff000000",
-    // backgroundColor: "#00000000", // transparent hexadecimal or anything with transparency,
-    // vibrancy: "content", // in my case...
+    // backgroundColor: "#00000000", // transparent hexadecimal or anything with transparency
+    // vibrancy: "content", // in my case
     // visualEffectState: "followWindow",
     webPreferences: {
       preload: path.resolve(__dirname, "preload.js"),
