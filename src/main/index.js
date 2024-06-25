@@ -30,6 +30,13 @@ async function createWindow() {
     width: 800,
     height: 680,
     title: "",
+    titleBarStyle: 'hiddenInset',
+    frame: false,
+    // transparent: true,
+    // backgroundColor: "#ff000000",
+    // backgroundColor: "#00000000", // transparent hexadecimal or anything with transparency,
+    // vibrancy: "content", // in my case...
+    // visualEffectState: "followWindow",
     webPreferences: {
       preload: path.resolve(__dirname, "preload.js"),
       webviewTag: true,
