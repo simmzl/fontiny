@@ -25,6 +25,8 @@ isDev &&
     hardResetMethod: "exit",
   });
 
+const isMac =  process.platform === 'darwin'
+
 async function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 470,
@@ -32,10 +34,10 @@ async function createWindow() {
     height: 680,
     minHeight: 657,
     title: "",
-    titleBarStyle: 'hiddenInset',
-    frame: false,
-    transparent: true,
-    backgroundColor: "#00000000", 
+    titleBarStyle: isMac ? 'hiddenInset' : 'default',
+    frame: !isMac,
+    transparent: isMac,
+    backgroundColor: isMac ? "#00000000" : "#fff",
     vibrancy: 'light',
     visualEffectState: "active",
     webPreferences: {
@@ -117,7 +119,7 @@ function setMenu() {
     {
       label: app.name,
       submenu: [
-        { label: 'Code by @yy && @simmzl' },
+        { label: 'Products crafted @yy && @simmzl' },
         { role: 'about' },
         { type: 'separator' },
         { role: 'services' },
@@ -132,7 +134,7 @@ function setMenu() {
   ]
 
   // 加载菜单
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+  Menu.setApplicationMenu(isMac ? Menu.buildFromTemplate(template) : null)
 }
 
 function setGlobalShortcut(mainWindow) {
