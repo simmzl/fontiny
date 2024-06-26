@@ -30,15 +30,14 @@ async function createWindow() {
     width: 470,
     minWidth: 470,
     height: 680,
+    minHeight: 657,
     title: "",
     titleBarStyle: 'hiddenInset',
     frame: false,
-    minHeight: 657,
-    // transparent: true,
-    // backgroundColor: "#ff000000",
-    // backgroundColor: "#00000000", // transparent hexadecimal or anything with transparency
-    // vibrancy: "content", // in my case
-    // visualEffectState: "followWindow",
+    transparent: true,
+    backgroundColor: "#00000000", 
+    vibrancy: 'light',
+    visualEffectState: "active",
     webPreferences: {
       preload: path.resolve(__dirname, "preload.js"),
       webviewTag: true,
@@ -55,13 +54,12 @@ async function createWindow() {
   try {
     const server = await runServer(path.join(__dirname, '../renderer/out/'))
     renderUrl = `http://localhost:${server.address().port}`
+  } catch (error) { }
 
-  } catch (error) {}
-
-  isDev && mainWindow.webContents.openDevTools();
+  // isDev && mainWindow.webContents.openDevTools();
 
   isDev ? mainWindow.loadURL("http://localhost:3001/") : renderUrl ? mainWindow.loadURL(renderUrl) : mainWindow.loadFile(path.resolve(__dirname, "../renderer/out/index.html"));
-  
+
   setMenu()
   setGlobalShortcut(mainWindow)
 
@@ -69,7 +67,7 @@ async function createWindow() {
     (async () => {
       extra.emptyDirSync(getFontPath());
       extra.emptyDirSync(getZipPath());
-      
+
       // 复制源字体文件到字体处理目录
       extra.copySync(getOriginFontPath(`${outputName}.ttf`), getFontPath(`${outputName}.ttf`));
 
