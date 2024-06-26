@@ -2,8 +2,9 @@ const fs = require('fs')
 const archiver = require('archiver')
 const extra = require('fs-extra')
 const fontSpider = require('font-spider')
-const { dialog } = require('electron')
+const { dialog, shell } = require('electron')
 const express = require('express');
+const path = require('path')
 
 const zipPath = getZipPath("fontiny.zip")
 
@@ -73,7 +74,11 @@ async function downloadFile(win, outputName) {
     filters: [],
     defaultPath: `${outputName}-fontiny.zip`
   })
-  if (res) extra.copyFileSync(zipPath, res)
+  if (res) {
+    extra.copyFileSync(zipPath, res)
+    shell.openPath(path.dirname(res))
+  }
+
   console.warn("===>>> Download file success")
 }
 
