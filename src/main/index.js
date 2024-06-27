@@ -9,6 +9,9 @@ const {
   downloadFile,
   getAssetsPath,
   getFontPath,
+  getOriginFontPath,
+  getZipPath,
+  runServer
 } = require("./utils");
 
 const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require("electron");
@@ -22,11 +25,21 @@ isDev &&
     hardResetMethod: "exit",
   });
 
-function createWindow() {
+const isMac =  process.platform === 'darwin'
+
+async function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: 470,
+    minWidth: 470,
     height: 680,
+    minHeight: 657,
     title: "",
+    titleBarStyle: isMac ? 'hiddenInset' : 'default',
+    frame: !isMac,
+    transparent: isMac,
+    backgroundColor: isMac ? "#00000000" : "#fff",
+    vibrancy: 'light',
+    visualEffectState: "active",
     webPreferences: {
       preload: path.resolve(__dirname, "preload.js"),
       webviewTag: true,
@@ -34,21 +47,32 @@ function createWindow() {
       allowRunningInsecureContent: true,
       webSecurity: false,
       contextIsolation: true,
-      devTools: false
+      devTools: isDev
     },
   });
 
-  isDev && mainWindow.webContents.openDevTools();
+  let renderUrl = "";
 
-  isDev ? mainWindow.loadURL("http://localhost:3001/") : mainWindow.loadFile(
-    path.resolve(__dirname, "../renderer/out/index.html")
-  );
-  
+  try {
+    const server = await runServer(path.join(__dirname, '../renderer/out/'))
+    renderUrl = `http://localhost:${server.address().port}`
+  } catch (error) { }
+
+  // isDev && mainWindow.webContents.openDevTools();
+
+  isDev ? mainWindow.loadURL("http://localhost:3001/") : renderUrl ? mainWindow.loadURL(renderUrl) : mainWindow.loadFile(path.resolve(__dirname, "../renderer/out/index.html"));
+
   setMenu()
   setGlobalShortcut(mainWindow)
 
   ipcMain.handle("font-tiny-compress", (event, chars) => {
     (async () => {
+      extra.emptyDirSync(getFontPath());
+      extra.emptyDirSync(getZipPath());
+
+      // 复制源字体文件到字体处理目录
+      extra.copySync(getOriginFontPath(`${outputName}.ttf`), getFontPath(`${outputName}.ttf`));
+
       // 写入html文件
       writeFile(chars, outputName);
 
@@ -69,11 +93,11 @@ function createWindow() {
   });
 
   ipcMain.handle("font-tiny-upload", (event, path, name) => {
-    extra.emptyDirSync(getFontPath());
+    extra.emptyDirSync(getOriginFontPath());
     const nameArr = name.split(".");
     nameArr.pop();
     outputName = nameArr.join("");
-    extra.copy(path, getFontPath(`${outputName}.ttf`), function () {
+    extra.copy(path, getOriginFontPath(`${outputName}.ttf`), function () {
       console.log("===>>> Upload file success");
     });
   });
@@ -95,7 +119,7 @@ function setMenu() {
     {
       label: app.name,
       submenu: [
-        { label: 'Code by @yy && @simmzl' },
+        { label: 'Products crafted @yy && @simmzl' },
         { role: 'about' },
         { type: 'separator' },
         { role: 'services' },
@@ -110,7 +134,7 @@ function setMenu() {
   ]
 
   // 加载菜单
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+  Menu.setApplicationMenu(isMac ? Menu.buildFromTemplate(template) : null)
 }
 
 function setGlobalShortcut(mainWindow) {

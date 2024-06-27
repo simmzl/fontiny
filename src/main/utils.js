@@ -2,9 +2,16 @@ const fs = require('fs')
 const archiver = require('archiver')
 const extra = require('fs-extra')
 const fontSpider = require('font-spider')
-const { dialog } = require('electron')
+const { dialog, shell } = require('electron')
+const express = require('express');
+const path = require('path')
 
 const zipPath = getZipPath("fontiny.zip")
+
+function getOriginFontPath(filename = "") {
+  extra.ensureDir(`${__dirname}/../dist/origin-font/`)
+  return `${__dirname}/../dist/origin-font/${filename}`
+}
 
 function getFontPath(filename = "") {
   extra.ensureDir(`${__dirname}/../dist/font/`)
@@ -47,6 +54,7 @@ function writeFile(chars, outputName) {
       /*使用指定字体*/
       body {
         font-family: '${outputName}';
+        white-space: pre-line;
       }
     </style>
   </head>
@@ -67,7 +75,11 @@ async function downloadFile(win, outputName) {
     filters: [],
     defaultPath: `${outputName}-fontiny.zip`
   })
-  if (res) extra.copyFileSync(zipPath, res)
+  if (res) {
+    extra.copyFileSync(zipPath, res)
+    shell.openPath(path.dirname(res))
+  }
+
   console.warn("===>>> Download file success")
 }
 
@@ -98,10 +110,25 @@ function zipFile() {
   })
 }
 
+function runServer(filePath) {
+  return new Promise((resolve, reject) => {
+    const app = express();
+    // 设置静态文件目录
+    app.use(express.static(filePath));
+    const server = app.listen(0, () => {
+      console.log(`Local server is running on http://localhost:${server.address().port}`);
+      resolve(server);
+    });
+  })
+}
+
 module.exports = {
   getAssetsPath,
   getFontPath,
   zipFile,
   writeFile,
-  downloadFile
+  downloadFile,
+  getOriginFontPath,
+  getZipPath,
+  runServer
 }
