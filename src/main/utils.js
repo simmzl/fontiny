@@ -54,6 +54,7 @@ function writeFile(chars, outputName) {
       /*使用指定字体*/
       body {
         font-family: '${outputName}';
+        white-space: pre-line;
       }
     </style>
   </head>
