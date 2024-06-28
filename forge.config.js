@@ -4,8 +4,27 @@ module.exports = {
     ignore: [
       "/src/renderer/fontiny-app/*"
     ],
-    arch: "all"
+    arch: "all",
+    appCopyright: "Simmzl(simmzl.cn)",
+    win32metadata: {
+      ProductName: "Fontiny",
+      CompanyName: "simmzl.cn",
+      FileDescription: "Fontiny"
+    }
   },
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "simmzl",
+          name: "fontiny"
+        },
+        draft: true,
+        generateReleaseNotes: true
+      }
+    }
+  ],
   makers: [
   // {
   //   name: "@electron-forge/maker-dmg",

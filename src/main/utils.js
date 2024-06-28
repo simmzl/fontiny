@@ -28,6 +28,11 @@ function getZipPath(filename = "") {
   return `${__dirname}/../dist/zip/${filename}`
 }
 
+function getStorePath(filename = "") {
+  extra.ensureDir(`${__dirname}/../dist/store/`)
+  return `${__dirname}/../dist/store/${filename}`
+}
+
 // 写入保留字体
 function writeFile(chars, outputName) {
   const data = `<!DOCTYPE html>
@@ -130,5 +135,6 @@ module.exports = {
   downloadFile,
   getOriginFontPath,
   getZipPath,
-  runServer
+  runServer,
+  getStorePath
 }

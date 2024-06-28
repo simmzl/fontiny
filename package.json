@@ -1,6 +1,6 @@
 {
   "name": "Fontiny",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "font tiny by simmzl",
   "main": "./src/main/index.js",
   "scripts": {
@@ -9,17 +9,22 @@
     "start:renderer": "cd ./src/renderer/fontiny-app && npm run dev",
     "start:main": "wait-on tcp:3001 && npx cross-env NODE_ENV=development electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make",
+    "make": "npm run make:mac",
     "make:arm64": "electron-forge make --platform=darwin --arch=arm64",
     "make:x64": "electron-forge make --platform=darwin --arch=x64",
     "make:mac": "run-s make:x64 make:arm64",
     "make:win": "electron-forge make --platform=win32",
     "make:universal": "electron-forge make --platform=darwin --arch=universal",
     "build": "npm run build:renderer && npm run make",
-    "build:renderer": "cd ./src/renderer/fontiny-app && npm run build"
+    "build:renderer": "cd ./src/renderer/fontiny-app && npm run build",
+    "publish": "electron-forge publish"
   },
   "author": "simmzl",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/simmzl/fontiny.git"
+  },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.61",
     "@electron-forge/maker-deb": "^6.0.0-beta.61",
@@ -27,6 +32,7 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.61",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
+    "@electron-forge/publisher-github": "^7.4.0",
     "concurrently": "^7.0.0",
     "cross-env": "^7.0.3",
     "electron": "^16.0.6",
@@ -39,6 +45,8 @@
     "electron-squirrel-startup": "^1.0.0",
     "express": "^4.19.2",
     "font-spider": "^1.3.5",
-    "fs-extra": "^10.0.0"
+    "fs-extra": "^10.0.0",
+    "node-localstorage": "^3.0.5",
+    "update-electron-app": "^3.0.0"
   }
 }

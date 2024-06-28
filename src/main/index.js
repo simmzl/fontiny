@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const extra = require("fs-extra");
 const fontSpider = require("font-spider");
-
+const { updateElectronApp } = require('update-electron-app');
 const {
   zipFile,
   writeFile,
@@ -11,10 +11,13 @@ const {
   getFontPath,
   getOriginFontPath,
   getZipPath,
-  runServer
+  runServer,
+  getStorePath
 } = require("./utils");
 
 const { app, BrowserWindow, ipcMain, Menu, globalShortcut } = require("electron");
+const LocalStorage = require('node-localstorage').LocalStorage;
+const localStorage = new LocalStorage(getStorePath());
 
 let outputName = "";
 
@@ -25,7 +28,7 @@ isDev &&
     hardResetMethod: "exit",
   });
 
-const isMac =  process.platform === 'darwin'
+const isMac = process.platform === 'darwin'
 
 async function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -46,8 +49,7 @@ async function createWindow() {
       nodeIntegration: true,
       allowRunningInsecureContent: true,
       webSecurity: false,
-      contextIsolation: true,
-      devTools: isDev
+      contextIsolation: true
     },
   });
 
@@ -58,7 +60,7 @@ async function createWindow() {
     renderUrl = `http://localhost:${server.address().port}`
   } catch (error) { }
 
-  // isDev && mainWindow.webContents.openDevTools();
+  isDev && mainWindow.webContents.openDevTools();
 
   isDev ? mainWindow.loadURL("http://localhost:3001/") : renderUrl ? mainWindow.loadURL(renderUrl) : mainWindow.loadFile(path.resolve(__dirname, "../renderer/out/index.html"));
 
@@ -101,6 +103,16 @@ async function createWindow() {
       console.log("===>>> Upload file success");
     });
   });
+
+  ipcMain.handle('font-tiny-get-store', (event, key) => {
+    return localStorage.getItem(key);
+  });
+
+  ipcMain.handle('font-tiny-set-store', (event, key, value) => {
+    localStorage.setItem(key, value);
+  });
+
+  updateElectronApp();
 }
 
 app.on("ready", () => {
@@ -152,6 +164,9 @@ function setGlobalShortcut(mainWindow) {
       })
       globalShortcut.register('CommandOrControl+A', () => {
         contents.selectAll()
+      })
+      globalShortcut.register('CommandOrControl+Shift+P', () => {
+        mainWindow.webContents.toggleDevTools();
       })
     }
   })

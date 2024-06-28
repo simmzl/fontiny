@@ -6,6 +6,12 @@ contextBridge.exposeInMainWorld('fontTiny', {
   },
   compress: (args) => {
     ipcRenderer.invoke('font-tiny-compress', args)
+  },
+  getStore: (key) => {
+    return ipcRenderer.invoke('font-tiny-get-store', key)
+  },
+  setStore: (key, value) => {
+    ipcRenderer.invoke('font-tiny-set-store', key, value)
   }
 })
 
