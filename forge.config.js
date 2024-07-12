@@ -26,28 +26,29 @@ module.exports = {
     }
   ],
   makers: [
-  // {
-  //   name: "@electron-forge/maker-dmg",
-  //   config: {
-  //     title: "Fontiny For Mac",
-  //     background: "./src/main/assets/bg/bg.png",
-  //     iconSize: 91,
-  //     contents: (options) => {
-  //       return [{
-  //         x: 142,
-  //         y: 168,
-  //         type: "file",
-  //         path: `${process.cwd()}/out/Fontiny-darwin-arm64/Fontiny.app`
-  //       },
-  //       {
-  //         x: 361,
-  //         y: 168,
-  //         type: "link",
-  //         path: "/Applications"
-  //       }]
-  //     }
-  //   }
-  // },
+  {
+    name: "@electron-forge/maker-dmg",
+    config: {
+      title: "Fontiny For Mac",
+      background: "./src/main/assets/bg/bg.png",
+      icon: "./src/main/assets/icons/favicon.icns",
+      iconSize: 91,
+      contents: (options) => {
+        return [{
+          x: 142,
+          y: 168,
+          type: "file",
+          path: `${process.cwd()}/out/Fontiny-darwin-${process.env.TARGET_ARCH || 'arm64'}/Fontiny.app`
+        },
+        {
+          x: 361,
+          y: 168,
+          type: "link",
+          path: "/Applications"
+        }]
+      }
+    }
+  },
   {
     name: "@electron-forge/maker-zip",
     platforms: ["darwin"]
